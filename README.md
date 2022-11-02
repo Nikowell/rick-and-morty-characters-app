@@ -1,1 +1,1 @@
-# rick-and-morty-characters-app
+# rick_and_morty_characters_app
