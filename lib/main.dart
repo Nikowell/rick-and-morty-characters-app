@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
       MultiBlocProvider(
         providers: [
           BlocProvider<CharacterBloc>(
-            create: (context) => CharacterBloc()..add(LoadCharacters()),
+            create: (context) => CharacterBloc(widget.characterDao)..add(LoadCharacters()),
           ),
           BlocProvider(
             create: (context) => FavoriteCharacterBloc(widget.characterDao),

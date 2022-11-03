@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_characters_app/blocs/character/character_bloc.dart';
 import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
 import 'package:rick_and_morty_characters_app/widgets/status_indicator.dart';
 
 import '../models/character.dart';
 
 class CharacterCard extends StatefulWidget {
+  final bool isRemovable;
   final Character character;
 
-  const CharacterCard({Key? key, required this.character}) : super(key: key);
+  const CharacterCard({Key? key, required this.character, required this.isRemovable}) : super(key: key);
 
   @override
   _CharacterCardState createState() => _CharacterCardState();
@@ -66,14 +68,12 @@ class _CharacterCardState extends State<CharacterCard> {
                         IconButton(
                           icon: Icon(widget.character.isFavorite ? Icons.star : Icons.star_border),
                           onPressed: () {
-                            if (widget.character.isFavorite) {
+                            if (widget.isRemovable) {
                               context.read<FavoriteCharacterBloc>().add(
                                 RemoveFavoriteCharacter(widget.character.id)
                               );
                             } else {
-                              context.read<FavoriteCharacterBloc>().add(
-                                  InsertNewFavoriteCharacter(
-                                      widget.character..isFavorite = true));
+                              context.read<CharacterBloc>().add(UpdateFavoriteStatus(widget.character));
                             }
                           },
                           iconSize: 30,
