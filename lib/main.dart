@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rick_and_morty_characters_app/pages/characters_list_page.dart';
+import 'package:rick_and_morty_characters_app/pages/favorite_characters_page.dart';
 
 void main() {
   runApp(const App());
@@ -31,16 +33,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _pageIndex = 0;
   final List<Widget> _pages = <Widget>[
-    const Text('Characters list'),
-    const Text('Favorite characters')
+    const CharactersListPage(),
+    const FavoriteCharactersPage()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
         child: SizedBox(
@@ -95,7 +94,8 @@ class _HomePageState extends State<HomePage> {
           ),
         )
       ),
-      body: _pages.elementAt(_pageIndex)
+      body: _pages.elementAt(_pageIndex),
+      backgroundColor: Colors.black,
     );
   }
 }
