@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
-import 'package:rick_and_morty_characters_app/models/favorite_character.dart';
 import 'package:rick_and_morty_characters_app/pages/characters_list_page.dart';
 import 'package:rick_and_morty_characters_app/pages/favorite_characters_page.dart';
 
+import 'dao/character_dao.dart';
 import 'database.dart';
 
 void main() async {
@@ -12,15 +12,15 @@ void main() async {
 
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db')
       .build();
-  final favoriteCharacterDao = database.favoriteCharacterDao;
+  final characterDao = database.characterDao;
 
-  runApp(App(favoriteCharacterDao: favoriteCharacterDao));
+  runApp(App(characterDao: characterDao));
 }
 
 class App extends StatelessWidget {
-  final FavoriteCharacterDao favoriteCharacterDao;
+  final CharacterDao characterDao;
 
-  const App({super.key, required this.favoriteCharacterDao});
+  const App({super.key, required this.characterDao});
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +29,15 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(favoriteCharacterDao: favoriteCharacterDao),
+      home: HomePage(characterDao: characterDao),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.favoriteCharacterDao});
+  const HomePage({super.key, required this.characterDao});
 
-  final FavoriteCharacterDao favoriteCharacterDao;
+  final CharacterDao characterDao;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -51,10 +51,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _pages = <Widget>[
       BlocProvider(
-        create: (context) => FavoriteCharacterBloc(widget.favoriteCharacterDao),
+        create: (context) => FavoriteCharacterBloc(widget.characterDao),
         child: const CharactersListPage(),
       ),
-      const FavoriteCharactersPage()
+      BlocProvider(
+        create: (context) => FavoriteCharacterBloc(widget.characterDao)..add(LoadFavoriteCharacters()),
+        child: const FavoriteCharactersPage(),
+      )
     ];
     super.initState();
   }

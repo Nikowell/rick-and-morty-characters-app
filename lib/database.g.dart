@@ -61,7 +61,7 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  FavoriteCharacterDao? _favoriteCharacterDaoInstance;
+  CharacterDao? _characterDaoInstance;
 
   Future<sqflite.Database> open(
     String path,
@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `FavoriteCharacter` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Character` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `status` TEXT NOT NULL, `species` TEXT NOT NULL, `gender` TEXT NOT NULL, `image` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -94,32 +94,53 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
-  FavoriteCharacterDao get favoriteCharacterDao {
-    return _favoriteCharacterDaoInstance ??=
-        _$FavoriteCharacterDao(database, changeListener);
+  CharacterDao get characterDao {
+    return _characterDaoInstance ??= _$CharacterDao(database, changeListener);
   }
 }
 
-class _$FavoriteCharacterDao extends FavoriteCharacterDao {
-  _$FavoriteCharacterDao(
+class _$CharacterDao extends CharacterDao {
+  _$CharacterDao(
     this.database,
     this.changeListener,
-  ) : _favoriteCharacterInsertionAdapter = InsertionAdapter(
+  )   : _queryAdapter = QueryAdapter(database),
+        _characterInsertionAdapter = InsertionAdapter(
             database,
-            'FavoriteCharacter',
-            (FavoriteCharacter item) =>
-                <String, Object?>{'id': item.id, 'name': item.name});
+            'Character',
+            (Character item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'status': item.status,
+                  'species': item.species,
+                  'gender': item.gender,
+                  'image': item.image,
+                  'isFavorite': item.isFavorite ? 1 : 0
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
 
-  final InsertionAdapter<FavoriteCharacter> _favoriteCharacterInsertionAdapter;
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Character> _characterInsertionAdapter;
 
   @override
-  Future<void> insertFavoriteCharacter(
-      FavoriteCharacter favoriteCharacter) async {
-    await _favoriteCharacterInsertionAdapter.insert(
-        favoriteCharacter, OnConflictStrategy.abort);
+  Future<List<Character>> findAllFavoriteCharacters() async {
+    return _queryAdapter.queryList('SELECT * FROM Character',
+        mapper: (Map<String, Object?> row) => Character(
+            row['id'] as int,
+            row['name'] as String,
+            row['status'] as String,
+            row['species'] as String,
+            row['gender'] as String,
+            row['image'] as String,
+            (row['isFavorite'] as int) != 0));
+  }
+
+  @override
+  Future<void> insertFavoriteCharacter(Character character) async {
+    await _characterInsertionAdapter.insert(
+        character, OnConflictStrategy.abort);
   }
 }

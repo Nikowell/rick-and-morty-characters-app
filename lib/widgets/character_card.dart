@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
-import 'package:rick_and_morty_characters_app/models/favorite_character.dart';
 import 'package:rick_and_morty_characters_app/widgets/status_indicator.dart';
 
 import '../models/character.dart';
@@ -65,10 +64,11 @@ class _CharacterCardState extends State<CharacterCard> {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.star_border),
+                          icon: Icon(widget.character.isFavorite ? Icons.star : Icons.star_border),
                           onPressed: () {
-                            var favoriteCharacter = FavoriteCharacter(widget.character.id, widget.character.name);
-                            context.read<FavoriteCharacterBloc>().add(InsertNewFavoriteCharacter(favoriteCharacter));
+                            context.read<FavoriteCharacterBloc>().add(
+                                InsertNewFavoriteCharacter(
+                                    widget.character..isFavorite = true));
                           },
                           iconSize: 30,
                         )
