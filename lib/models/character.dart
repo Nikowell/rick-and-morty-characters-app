@@ -1,10 +1,15 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Character {
+  @primaryKey
   final int id;
   final String name;
   final String status;
   final String species;
   final String gender;
   final String image;
+  bool isFavorite;
 
   Character(
     this.id,
@@ -12,7 +17,7 @@ class Character {
     this.status,
     this.species,
     this.gender,
-    this.image
+    this.image, this.isFavorite
   );
 
   factory Character.fromJson(Map<String, dynamic> json) {
@@ -22,7 +27,9 @@ class Character {
       json["status"],
       json["species"],
       json["gender"],
-      json["image"]
+      json["image"],
+      false
     );
   }
 }
+
