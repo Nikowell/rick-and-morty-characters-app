@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         child: const CharactersListPage(),
       ),
       BlocProvider(
-        create: (context) => FavoriteCharacterBloc(widget.characterDao)..add(LoadFavoriteCharacters()),
+        create: (context) => FavoriteCharacterBloc(widget.characterDao),
         child: const FavoriteCharactersPage(),
       )
     ];

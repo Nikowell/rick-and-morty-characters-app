@@ -15,6 +15,8 @@ class FavoriteCharactersPage extends StatefulWidget {
 class _FavoriteCharactersPageState extends State<FavoriteCharactersPage> {
   @override
   Widget build(BuildContext context) {
+    context.read<FavoriteCharacterBloc>().add(LoadFavoriteCharacters());
+
     return SafeArea(
       child: Column(
         children: [
@@ -32,23 +34,23 @@ class _FavoriteCharactersPageState extends State<FavoriteCharactersPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Character>>(
-              future: context.read<FavoriteCharacterBloc>().favoriteCharacterDao.findAllFavoriteCharacters(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                  List<Character> characters = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final character = characters.elementAt(index);
-                      return CharacterCard(character: character);
-                    },
-                    itemCount: characters.length,
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
+            child: BlocBuilder<FavoriteCharacterBloc, FavoriteCharacterState>(
+              bloc: context.read<FavoriteCharacterBloc>(),
+                builder: (context, state) {
+                  if (state is FavoriteCharactersLoaded) {
+                    List<Character> characters = state.characters;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final character = characters.elementAt(index);
+                        return CharacterCard(character: character);
+                      },
+                      itemCount: characters.length,
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                 }
-              }
             ),
           )
         ],

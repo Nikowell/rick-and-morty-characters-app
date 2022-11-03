@@ -139,6 +139,12 @@ class _$CharacterDao extends CharacterDao {
   }
 
   @override
+  Future<void> deleteFavoriteCharacter(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Character WHERE id = ?1', arguments: [id]);
+  }
+
+  @override
   Future<void> insertFavoriteCharacter(Character character) async {
     await _characterInsertionAdapter.insert(
         character, OnConflictStrategy.abort);

@@ -66,9 +66,15 @@ class _CharacterCardState extends State<CharacterCard> {
                         IconButton(
                           icon: Icon(widget.character.isFavorite ? Icons.star : Icons.star_border),
                           onPressed: () {
-                            context.read<FavoriteCharacterBloc>().add(
-                                InsertNewFavoriteCharacter(
-                                    widget.character..isFavorite = true));
+                            if (widget.character.isFavorite) {
+                              context.read<FavoriteCharacterBloc>().add(
+                                RemoveFavoriteCharacter(widget.character.id)
+                              );
+                            } else {
+                              context.read<FavoriteCharacterBloc>().add(
+                                  InsertNewFavoriteCharacter(
+                                      widget.character..isFavorite = true));
+                            }
                           },
                           iconSize: 30,
                         )
