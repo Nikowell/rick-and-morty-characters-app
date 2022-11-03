@@ -22,6 +22,17 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       emit(CharacterLoaded(characters));
     });
 
+    on<UpdateFavoriteStatus>((event, emit) async {
+      event.character.isFavorite = !event.character.isFavorite;
+      if (event.character.isFavorite) {
+        await favoriteCharacterDao.insertFavoriteCharacter(event.character);
+      } else {
+        await favoriteCharacterDao.deleteFavoriteCharacter(event.character.id);
+      }
+      characters[characters.indexWhere((element) => element.id == event.character.id)] = event.character;
+      emit(CharacterLoaded(characters));
+    });
+
     on<SortAlphabetically>((event, emit) async {
       characters.sort((a, b) => a.name.compareTo(b.name));
       emit(CharacterLoaded(characters));
