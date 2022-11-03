@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
           ),
         )
       ),
+      body: _pages.elementAt(_pageIndex)
     );
   }
 }
