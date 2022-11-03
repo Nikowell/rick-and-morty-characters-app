@@ -41,13 +41,59 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-
-          ],
-        ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.home,
+                      size: 38,
+                      color: _pageIndex == 0 ? Colors.green : Colors.black,
+                    ),
+                    onPressed: () {
+                      if (_pageIndex != 0) {
+                        setState(() {
+                          _pageIndex = 0;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 2.0),
+                child: VerticalDivider(
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      size: 38,
+                      color: _pageIndex == 1 ? Colors.green : Colors.black,
+                    ),
+                    onPressed: () {
+                      if (_pageIndex != 1) {
+                        setState(() {
+                          _pageIndex = 1;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }
