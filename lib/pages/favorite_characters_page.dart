@@ -43,7 +43,7 @@ class _FavoriteCharactersPageState extends State<FavoriteCharactersPage> {
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         final character = characters.elementAt(index);
-                        return CharacterCard(character: character);
+                        return CharacterCard(character: character, isRemovable: true);
                       },
                       itemCount: characters.length,
                     );

@@ -89,7 +89,7 @@ class _CharactersListPageState extends State<CharactersListPage> {
                    shrinkWrap: true,
                    itemBuilder: (context, index) {
                      final character = characters.elementAt(index);
-                     return CharacterCard(character: character);
+                     return CharacterCard(character: character, isRemovable: false);
                    },
                    itemCount: characters.length,
                  );
