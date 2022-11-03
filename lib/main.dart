@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_characters_app/blocs/character/character_bloc.dart';
 import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
 import 'package:rick_and_morty_characters_app/pages/characters_list_page.dart';
 import 'package:rick_and_morty_characters_app/pages/favorite_characters_page.dart';
@@ -50,8 +51,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _pages = <Widget>[
-      BlocProvider(
-        create: (context) => FavoriteCharacterBloc(widget.characterDao),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<CharacterBloc>(
+            create: (context) => CharacterBloc()..add(LoadCharacters()),
+          ),
+          BlocProvider(
+            create: (context) => FavoriteCharacterBloc(widget.characterDao),
+          )
+        ],
         child: const CharactersListPage(),
       ),
       BlocProvider(

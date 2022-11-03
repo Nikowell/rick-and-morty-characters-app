@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty_characters_app/services/rick_and_morty_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_characters_app/blocs/character/character_bloc.dart';
 
 import '../models/character.dart';
 import '../widgets/character_card.dart';
@@ -12,11 +13,11 @@ class CharactersListPage extends StatefulWidget {
 }
 
 class _CharactersListPageState extends State<CharactersListPage> {
-  late RickAndMortyService _rickAndMortyService;
+  late CharacterBloc _characterBloc;
 
   @override
   void initState() {
-    _rickAndMortyService = RickAndMortyService();
+    _characterBloc = BlocProvider.of<CharacterBloc>(context);
     super.initState();
   }
 
@@ -29,8 +30,8 @@ class _CharactersListPageState extends State<CharactersListPage> {
             width: double.infinity,
             height: 60,
             child: Stack(
-              children: const [
-                Center(
+              children: [
+                const Center(
                   child: Text(
                     'Rick & Morty',
                     style: TextStyle(
@@ -42,35 +43,60 @@ class _CharactersListPageState extends State<CharactersListPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.sort,
                       size: 35,
                       color: Colors.grey,
                     ),
-                    onPressed: null,
+                    onPressed: () {
+                      showMenu<CharacterEvent>(
+                        context: context,
+                        position: const RelativeRect.fromLTRB(25.0, 25.0, 0.0, 0.0),
+                        items: [
+                          PopupMenuItem<CharacterEvent>(
+                            value: SortAlphabetically(),
+                            child: const Text('A => Z')),
+                          PopupMenuItem<CharacterEvent>(
+                            value: SortReverseAlphabetically(),
+                            child: const Text('Z => A')),
+                        ],
+                      ).then((CharacterEvent? selectedEvent) {
+                        if (selectedEvent == null) return;
+                        if (selectedEvent is SortAlphabetically) {
+                          _characterBloc.add(SortAlphabetically());
+                        } else {
+                          _characterBloc.add(SortReverseAlphabetically());
+                        }
+                      });
+                    },
                   ),
                 )
               ],
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Character>>(
-              future: _rickAndMortyService.getAllCharacters(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                  List<Character> characters = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final character = characters.elementAt(index);
-                      return CharacterCard(character: character);
-                    },
-                    itemCount: characters.length,
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
+            child: BlocConsumer(
+              bloc: _characterBloc,
+              listener: (context, state) {
+                if (state is CharacterInitial) {
+                  _characterBloc.add(LoadCharacters());
                 }
-              }
+              },
+              builder: (context, state) {
+                if (state is CharacterLoaded) {
+                 List<Character> characters = state.characters;
+                 return ListView.builder(
+                   shrinkWrap: true,
+                   itemBuilder: (context, index) {
+                     final character = characters.elementAt(index);
+                     return CharacterCard(character: character);
+                   },
+                   itemCount: characters.length,
+                 );
+               } else {
+                 return const Center(child: CircularProgressIndicator());
+               }
+             }
             ),
           )
         ],
