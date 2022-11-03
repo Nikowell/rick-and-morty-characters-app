@@ -11,4 +11,6 @@ class FavoriteCharacter {
 
 @dao
 abstract class FavoriteCharacterDao {
+  @insert
+  Future<void> insertFavoriteCharacter(FavoriteCharacter favoriteCharacter);
 }
