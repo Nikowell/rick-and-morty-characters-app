@@ -104,9 +104,22 @@ class _$FavoriteCharacterDao extends FavoriteCharacterDao {
   _$FavoriteCharacterDao(
     this.database,
     this.changeListener,
-  );
+  ) : _favoriteCharacterInsertionAdapter = InsertionAdapter(
+            database,
+            'FavoriteCharacter',
+            (FavoriteCharacter item) =>
+                <String, Object?>{'id': item.id, 'name': item.name});
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final InsertionAdapter<FavoriteCharacter> _favoriteCharacterInsertionAdapter;
+
+  @override
+  Future<void> insertFavoriteCharacter(
+      FavoriteCharacter favoriteCharacter) async {
+    await _favoriteCharacterInsertionAdapter.insert(
+        favoriteCharacter, OnConflictStrategy.abort);
+  }
 }

@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
+import 'package:rick_and_morty_characters_app/models/favorite_character.dart';
 import 'package:rick_and_morty_characters_app/pages/characters_list_page.dart';
 import 'package:rick_and_morty_characters_app/pages/favorite_characters_page.dart';
 
-void main() {
-  runApp(const App());
+import 'database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final database = await $FloorAppDatabase.databaseBuilder('app_database.db')
+      .build();
+  final favoriteCharacterDao = database.favoriteCharacterDao;
+
+  runApp(App(favoriteCharacterDao: favoriteCharacterDao));
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final FavoriteCharacterDao favoriteCharacterDao;
+
+  const App({super.key, required this.favoriteCharacterDao});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +29,15 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(favoriteCharacterDao: favoriteCharacterDao),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key, required this.favoriteCharacterDao});
 
-  final String title;
+  final FavoriteCharacterDao favoriteCharacterDao;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -32,10 +45,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _pageIndex = 0;
-  final List<Widget> _pages = <Widget>[
-    const CharactersListPage(),
-    const FavoriteCharactersPage()
-  ];
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    _pages = <Widget>[
+      BlocProvider(
+        create: (context) => FavoriteCharacterBloc(widget.favoriteCharacterDao),
+        child: const CharactersListPage(),
+      ),
+      const FavoriteCharactersPage()
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
