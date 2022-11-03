@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_characters_app/blocs/favorite_character/favorite_character_bloc.dart';
+import 'package:rick_and_morty_characters_app/models/favorite_character.dart';
 import 'package:rick_and_morty_characters_app/pages/characters_list_page.dart';
 import 'package:rick_and_morty_characters_app/pages/favorite_characters_page.dart';
 
-void main() {
-  runApp(const App());
+import 'database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final database = await $FloorAppDatabase.databaseBuilder('app_database.db')
+      .build();
+  final favoriteCharacterDao = database.favoriteCharacterDao;
+
+  runApp(App(favoriteCharacterDao: favoriteCharacterDao));
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final FavoriteCharacterDao favoriteCharacterDao;
+
+  const App({super.key, required this.favoriteCharacterDao});
 
   @override
   Widget build(BuildContext context) {
