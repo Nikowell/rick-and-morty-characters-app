@@ -94,7 +94,8 @@ class _HomePageState extends State<HomePage> {
           ),
         )
       ),
-      body: _pages.elementAt(_pageIndex)
+      body: _pages.elementAt(_pageIndex),
+      backgroundColor: Colors.black,
     );
   }
 }
