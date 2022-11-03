@@ -10,3 +10,9 @@ class FavoriteCharactersLoaded extends FavoriteCharacterState {
 
   FavoriteCharactersLoaded(this.characters);
 }
+
+class FavoriteCharactersDeleted extends FavoriteCharacterState {
+  final int id;
+
+  FavoriteCharactersDeleted(this.id);
+}

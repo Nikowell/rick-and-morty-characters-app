@@ -10,3 +10,9 @@ class InsertNewFavoriteCharacter extends FavoriteCharacterEvent {
 
   InsertNewFavoriteCharacter(this.favoriteCharacter);
 }
+
+class RemoveFavoriteCharacter extends FavoriteCharacterEvent {
+  final int id;
+
+  RemoveFavoriteCharacter(this.id);
+}
