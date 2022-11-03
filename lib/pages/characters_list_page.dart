@@ -54,23 +54,28 @@ class _CharactersListPageState extends State<CharactersListPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Character>>(
-              future: _rickAndMortyService.getAllCharacters(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                  List<Character> characters = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final character = characters.elementAt(index);
-                      return CharacterCard(character: character);
-                    },
-                    itemCount: characters.length,
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
+            child: BlocConsumer(
+              bloc: _characterBloc,
+              listener: (context, state) {
+                if (state is CharacterInitial) {
+                  _characterBloc.add(LoadCharacters());
                 }
-              }
+              },
+              builder: (context, state) {
+                if (state is CharacterLoaded) {
+                 List<Character> characters = state.characters;
+                 return ListView.builder(
+                   shrinkWrap: true,
+                   itemBuilder: (context, index) {
+                     final character = characters.elementAt(index);
+                     return CharacterCard(character: character);
+                   },
+                   itemCount: characters.length,
+                 );
+               } else {
+                 return const Center(child: CircularProgressIndicator());
+               }
+             }
             ),
           )
         ],
