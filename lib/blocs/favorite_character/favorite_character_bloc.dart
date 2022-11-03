@@ -19,10 +19,6 @@ class FavoriteCharacterBloc extends Bloc<FavoriteCharacterEvent, FavoriteCharact
       emit(FavoriteCharactersLoaded(results));
     });
 
-    on<InsertNewFavoriteCharacter>((event, emit) async {
-      await favoriteCharacterDao.insertFavoriteCharacter(event.favoriteCharacter);
-    });
-
     on<RemoveFavoriteCharacter>((event, emit) async {
       await favoriteCharacterDao.deleteFavoriteCharacter(event.id);
       final results = await favoriteCharacterDao.findAllFavoriteCharacters();
