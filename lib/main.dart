@@ -29,6 +29,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _pageIndex = 0;
+  final List<Widget> _pages = <Widget>[
+    const Text('Characters list'),
+    const Text('Favorite characters')
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
