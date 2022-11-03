@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty_characters_app/services/rick_and_morty_service.dart';
 
 import '../models/character.dart';
+import '../widgets/character_card.dart';
 
 class CharactersListPage extends StatefulWidget {
   const CharactersListPage({Key? key}) : super(key: key);
@@ -62,7 +63,7 @@ class _CharactersListPageState extends State<CharactersListPage> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final character = characters.elementAt(index);
-                      return Text(character.name, style: const TextStyle(color: Colors.white));
+                      return CharacterCard(character: character);
                     },
                     itemCount: characters.length,
                   );
