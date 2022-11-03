@@ -29,15 +29,15 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(favoriteCharacterDao: favoriteCharacterDao),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key, required this.favoriteCharacterDao});
 
-  final String title;
+  final FavoriteCharacterDao favoriteCharacterDao;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -45,10 +45,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _pageIndex = 0;
-  final List<Widget> _pages = <Widget>[
-    const CharactersListPage(),
-    const FavoriteCharactersPage()
-  ];
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    _pages = <Widget>[
+      BlocProvider(
+        create: (context) => FavoriteCharacterBloc(widget.favoriteCharacterDao),
+        child: const CharactersListPage(),
+      ),
+      const FavoriteCharactersPage()
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
