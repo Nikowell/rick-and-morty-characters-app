@@ -78,8 +78,13 @@ class _CharactersListPageState extends State<CharactersListPage> {
             child: BlocConsumer(
               bloc: _characterBloc,
               listener: (context, state) {
-                if (state is CharacterInitial) {
-                  _characterBloc.add(LoadCharacters());
+                if (state is CharacterLoading) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Loading more characters ...'),
+                      duration: Duration(seconds: 1),
+                    )
+                  );
                 }
               },
               builder: (context, state) {
