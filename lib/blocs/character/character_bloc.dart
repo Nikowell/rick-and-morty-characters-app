@@ -59,12 +59,12 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
     on<SortAlphabetically>((event, emit) async {
       characters.sort((a, b) => a.name.compareTo(b.name));
-      emit(CharacterLoaded(characters));
+      emit(CharacterSorted(characters));
     });
 
     on<SortReverseAlphabetically>((event, emit) async {
       characters.sort((a, b) => b.name.compareTo(a.name));
-      emit(CharacterLoaded(characters));
+      emit(CharacterSorted(characters));
     });
   }
 }
