@@ -8,6 +8,7 @@ class Character {
   final String status;
   final String species;
   final String gender;
+  final String? origin;
   final String image;
   bool isFavorite;
 
@@ -17,7 +18,9 @@ class Character {
     this.status,
     this.species,
     this.gender,
-    this.image, this.isFavorite
+    this.origin,
+    this.image,
+    this.isFavorite
   );
 
   factory Character.fromJson(Map<String, dynamic> json) {
@@ -27,6 +30,7 @@ class Character {
       json["status"],
       json["species"],
       json["gender"],
+      json["origin"] != null ? json["origin"]["name"] : null,
       json["image"],
       false
     );
