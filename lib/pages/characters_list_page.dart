@@ -104,16 +104,28 @@ class _CharactersListPageState extends State<CharactersListPage> {
               },
               builder: (context, state) {
                 if (state is CharacterLoaded) {
-                 List<Character> characters = state.characters;
+                 _characters += state.characters;
                  return ListView.builder(
+                   controller: controller,
                    shrinkWrap: true,
                    itemBuilder: (context, index) {
-                     final character = characters.elementAt(index);
+                     final character = _characters.elementAt(index);
                      return CharacterCard(character: character, isRemovable: false);
                    },
-                   itemCount: characters.length,
+                   itemCount: _characters.length,
                  );
-               } else {
+               } else if (state is CharacterSorted) {
+                  List<Character> characters = state.characters;
+                  return ListView.builder(
+                    controller: controller,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final character = characters.elementAt(index);
+                      return CharacterCard(character: character, isRemovable: false);
+                    },
+                    itemCount: characters.length,
+                  );
+                } else {
                  return const Center(child: CircularProgressIndicator());
                }
              }
