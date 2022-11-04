@@ -21,13 +21,16 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   CharacterBloc(this.favoriteCharacterDao) : super(CharacterInitial()) {
 
     on<LoadCharacters>((event, emit) async {
-      characters = await rickAndMortyService.getAllCharacters();
+      apiSchema = await rickAndMortyService.getCharacters(null);
+      characters = apiSchema.results;
       List<Character> favoriteCharacters = await favoriteCharacterDao.findAllFavoriteCharacters();
 
       for (var favoriteCharacter in favoriteCharacters) {
-        characters[characters.indexWhere((element) => element.id == favoriteCharacter.id)].isFavorite = true;
+        Character? character = characters.firstWhereOrNull((element) => element.id == favoriteCharacter.id);
+        if (character != null) {
+          character.isFavorite = true;
+        }
       }
-
       emit(CharacterLoaded(characters));
     });
 
