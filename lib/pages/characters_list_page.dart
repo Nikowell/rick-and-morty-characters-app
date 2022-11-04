@@ -64,10 +64,10 @@ class _CharactersListPageState extends State<CharactersListPage> {
                         items: [
                           PopupMenuItem<CharacterEvent>(
                             value: SortAlphabetically(),
-                            child: const Text('A => Z')),
+                            child: const Text('A → Z')),
                           PopupMenuItem<CharacterEvent>(
                             value: SortReverseAlphabetically(),
-                            child: const Text('Z => A')),
+                            child: const Text('Z → A')),
                         ],
                       ).then((CharacterEvent? selectedEvent) {
                         if (selectedEvent == null) return;
