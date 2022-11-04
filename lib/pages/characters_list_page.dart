@@ -14,11 +14,20 @@ class CharactersListPage extends StatefulWidget {
 
 class _CharactersListPageState extends State<CharactersListPage> {
   late CharacterBloc _characterBloc;
+  late ScrollController controller;
+  List<Character> _characters = [];
 
   @override
   void initState() {
     _characterBloc = BlocProvider.of<CharacterBloc>(context);
+    controller = ScrollController()..addListener(handleScrolling);
     super.initState();
+  }
+
+  void handleScrolling() {
+    if (controller.offset >= controller.position.maxScrollExtent) {
+      _characterBloc.add(LoadMoreCharacters());
+    }
   }
 
   @override
@@ -55,10 +64,10 @@ class _CharactersListPageState extends State<CharactersListPage> {
                         items: [
                           PopupMenuItem<CharacterEvent>(
                             value: SortAlphabetically(),
-                            child: const Text('A => Z')),
+                            child: const Text('A → Z')),
                           PopupMenuItem<CharacterEvent>(
                             value: SortReverseAlphabetically(),
-                            child: const Text('Z => A')),
+                            child: const Text('Z → A')),
                         ],
                       ).then((CharacterEvent? selectedEvent) {
                         if (selectedEvent == null) return;
@@ -78,22 +87,45 @@ class _CharactersListPageState extends State<CharactersListPage> {
             child: BlocConsumer(
               bloc: _characterBloc,
               listener: (context, state) {
-                if (state is CharacterInitial) {
-                  _characterBloc.add(LoadCharacters());
+                if (state is CharacterLoading) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Loading more characters ...'),
+                      duration: Duration(seconds: 1),
+                    )
+                  );
                 }
+                if (state is CharacterSorted) {
+                  controller.jumpTo(controller.position.minScrollExtent);
+                }
+              },
+              buildWhen: (previous, current) {
+                return (previous != current && current is CharacterLoaded) || current is CharacterSorted;
               },
               builder: (context, state) {
                 if (state is CharacterLoaded) {
-                 List<Character> characters = state.characters;
+                 _characters += state.characters;
                  return ListView.builder(
+                   controller: controller,
                    shrinkWrap: true,
                    itemBuilder: (context, index) {
-                     final character = characters.elementAt(index);
+                     final character = _characters.elementAt(index);
                      return CharacterCard(character: character, isRemovable: false);
                    },
-                   itemCount: characters.length,
+                   itemCount: _characters.length,
                  );
-               } else {
+               } else if (state is CharacterSorted) {
+                  List<Character> characters = state.characters;
+                  return ListView.builder(
+                    controller: controller,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final character = characters.elementAt(index);
+                      return CharacterCard(character: character, isRemovable: false);
+                    },
+                    itemCount: characters.length,
+                  );
+                } else {
                  return const Center(child: CircularProgressIndicator());
                }
              }
