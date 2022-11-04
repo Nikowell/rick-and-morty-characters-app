@@ -33,7 +33,8 @@ class _CharacterCardState extends State<CharacterCard> {
           children: [
             Expanded(
               flex: 2,
-              child: Container(
+              child: SizedBox(
+                height: double.infinity,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
@@ -41,7 +42,7 @@ class _CharacterCardState extends State<CharacterCard> {
                   ),
                   child: Image.network(
                     widget.character.image,
-                    fit: BoxFit.fitHeight,
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
@@ -49,19 +50,24 @@ class _CharacterCardState extends State<CharacterCard> {
             Expanded(
               flex: 3,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                padding: const EdgeInsets.only(left: 16.0, top: 4.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Text(
-                            widget.character.name,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              color: Colors.white
+                        Expanded(
+                          child: Tooltip(
+                            message: widget.character.name,
+                            child: Text(
+                              widget.character.name,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                overflow: TextOverflow.fade
+                              ),
+                              softWrap: false,
                             ),
                           ),
                         ),
@@ -80,31 +86,45 @@ class _CharacterCardState extends State<CharacterCard> {
                         )
                       ],
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            StatusIndicator(characterStatus: widget.character.status),
-                            const SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              StatusIndicator(characterStatus: widget.character.status),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  "${widget.character.status} - ${widget.character.species}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Gender: ${widget.character.gender}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          if (widget.character.origin != null)
                             Text(
-                              "${widget.character.status} - ${widget.character.species}",
+                              "Origin: ${widget.character.origin}",
+                              maxLines: 2,
                               style: const TextStyle(
                                 color: Colors.white,
+                                overflow: TextOverflow.clip,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "Gender: ${widget.character.gender}",
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
+                            )
+                        ],
+                      ),
                     ),
                   ],
                 ),

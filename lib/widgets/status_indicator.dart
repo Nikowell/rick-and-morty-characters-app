@@ -22,11 +22,11 @@ class StatusIndicator extends StatelessWidget {
 
     switch (enumStatus) {
       case Status.Alive:
-        return Colors.lightGreen;
+        return Colors.lightGreenAccent;
       case Status.Dead:
         return Colors.red;
       default:
-        return Colors.grey;
+        return Colors.grey.shade500;
     }
   }
 }

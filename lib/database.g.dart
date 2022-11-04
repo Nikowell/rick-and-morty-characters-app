@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Character` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `status` TEXT NOT NULL, `species` TEXT NOT NULL, `gender` TEXT NOT NULL, `image` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Character` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `status` TEXT NOT NULL, `species` TEXT NOT NULL, `gender` TEXT NOT NULL, `origin` TEXT NOT NULL, `image` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -113,6 +113,7 @@ class _$CharacterDao extends CharacterDao {
                   'status': item.status,
                   'species': item.species,
                   'gender': item.gender,
+                  'origin': item.origin,
                   'image': item.image,
                   'isFavorite': item.isFavorite ? 1 : 0
                 });
@@ -134,6 +135,7 @@ class _$CharacterDao extends CharacterDao {
             row['status'] as String,
             row['species'] as String,
             row['gender'] as String,
+            row['origin'] as String,
             row['image'] as String,
             (row['isFavorite'] as int) != 0));
   }
