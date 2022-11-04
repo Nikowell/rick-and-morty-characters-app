@@ -10,3 +10,9 @@ class CharacterLoaded extends CharacterState {
 
   CharacterLoaded(this.characters);
 }
+
+class CharacterSorted extends CharacterState {
+  final List<Character> characters;
+
+  CharacterSorted(this.characters);
+}
