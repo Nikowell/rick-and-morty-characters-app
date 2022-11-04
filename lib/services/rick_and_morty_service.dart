@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
-
-import '../models/character.dart';
+import 'package:rick_and_morty_characters_app/models/api_schema.dart';
 
 class RickAndMortyService {
-  Future<List<Character>> getAllCharacters() async {
-    List<Character> characters = [];
-    Response response = await Dio().get('https://rickandmortyapi.com/api/character');
-    characters = (response.data["results"] as List).map((c) => Character.fromJson(c)).toList();
-    return characters;
+  Future<ApiSchema> getCharacters({String? next}) async {
+    late ApiSchema apiSchema;
+    Response response = await Dio().get(next ?? 'https://rickandmortyapi.com/api/character');
+    apiSchema = ApiSchema.fromJson(response.data);
+    return apiSchema;
   }
 }

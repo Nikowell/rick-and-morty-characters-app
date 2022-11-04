@@ -21,7 +21,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   CharacterBloc(this.favoriteCharacterDao) : super(CharacterInitial()) {
 
     on<LoadCharacters>((event, emit) async {
-      apiSchema = await rickAndMortyService.getCharacters(null);
+      apiSchema = await rickAndMortyService.getCharacters();
       characters = apiSchema.results;
       List<Character> favoriteCharacters = await favoriteCharacterDao.findAllFavoriteCharacters();
 
@@ -36,7 +36,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
     on<LoadMoreCharacters>((event, emit) async {
       emit(CharacterLoading());
-      apiSchema = await rickAndMortyService.getCharacters(apiSchema.info.next!);
+      apiSchema = await rickAndMortyService.getCharacters(next: apiSchema.info.next!);
       characters += apiSchema.results;
       List<Character> favoriteCharacters = await favoriteCharacterDao.findAllFavoriteCharacters();
 
