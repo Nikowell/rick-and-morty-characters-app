@@ -14,11 +14,20 @@ class CharactersListPage extends StatefulWidget {
 
 class _CharactersListPageState extends State<CharactersListPage> {
   late CharacterBloc _characterBloc;
+  late ScrollController controller;
+  List<Character> _characters = [];
 
   @override
   void initState() {
     _characterBloc = BlocProvider.of<CharacterBloc>(context);
+    controller = ScrollController()..addListener(handleScrolling);
     super.initState();
+  }
+
+  void handleScrolling() {
+    if (controller.offset >= controller.position.maxScrollExtent) {
+      _characterBloc.add(LoadMoreCharacters());
+    }
   }
 
   @override
@@ -86,6 +95,12 @@ class _CharactersListPageState extends State<CharactersListPage> {
                     )
                   );
                 }
+                if (state is CharacterSorted) {
+                  controller.jumpTo(controller.position.minScrollExtent);
+                }
+              },
+              buildWhen: (previous, current) {
+                return (previous != current && current is CharacterLoaded) || current is CharacterSorted;
               },
               builder: (context, state) {
                 if (state is CharacterLoaded) {
